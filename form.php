@@ -1,7 +1,7 @@
 <?php
 // fonction de lettre nuiqueement
 function validLetterOnly($input){
-    if(preg_match("/^[A-Za-z]+$/", $input)){
+    if (preg_match("/^[A-Za-z ]+$/", $input)){
         return true;    // valide
     }else{
         return false;   // not valide
@@ -9,7 +9,7 @@ function validLetterOnly($input){
 }
 // fonction numéro
 function validNumberOnly($input){
-    if(preg_match("/^[0-9]+$/", $input)){
+    if (preg_match("/^[0-9]+$/", $input)){
         return true;
     }else{
         return false;
@@ -32,240 +32,251 @@ function validAdress($input) {
     }
 }
 // sanétisation
-function sanitizeIpunt($input){
+function sanitizeInput($input){
     $inputSanitized = filter_var($input, FILTER_SANITIZE_STRING, FILTER_SANITIZE_SPECIAL_CHARS);
 
     return $inputSanitized;
 }
+
 // Vérifier si le formulaire a été soumis
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
     // Récupérer les données saisies
-    $bdate = sanitizeIpunt($_POST["bdate"]);
+    $bdate = sanitizeInput($_POST["bdate"]);
     if (empty($bdate)){
         header("Location: fail.html");
         exit;
     }
 // ---
-    $time_event = sanitizeIpunt($_POST["event"]);
+    $time_event = sanitizeInput($_POST["event"]);
     $parsed_time = strtotime($time_event);
     if ($parsed_time === false || date("H:i", $parsed_time) !== $time_event){
        header("Location: fail.html");
         exit;
     }
 // ---
-    $artist = sanitizeIpunt($_POST["artist"]);
+    $artist = sanitizeInput($_POST["artist"]);
     if ($artist !== "1" && $artist !== "2" && $artist !== "3" && $artist !== "4"){
         header("Location: fail.html");
         exit;
     }
 // ---
-    $description = sanitizeIpunt($_POST["description"]);
+    $description = sanitizeInput($_POST["description"]);
     if (validAdress($description)){
         //
     }else{
-        echo "Le champ description contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">DESCRIPTION contien des caractères invalide</div>';
         exit;
     }
 // ---
-    $promo = sanitizeIpunt($_POST["promo"]);
+    $promo = sanitizeInput($_POST["promo"]);
     if (validLetterOnly($promo)){
         if (strlen($promo) > 10){
-            echo "Le champ promotion name est trop long";
-            exit;
-        }
-    }else{
-        echo "Le champ promoter's name contien des caractères invalide";
-        exit;
-    }
-// ---
-    $venue_name = sanitizeIpunt($_POST["venue_name"]);
-    if (validLetterOnly($venue_name)){
-        if (strlen($venue_name) > 20){
-            echo "Le champ name est trop long";
-            exit;
-        }
-    }else{
-        echo "Le champ venue name contien des caractères invalide";
-        exit;
-    }
-// ---
-    $address_1 = sanitizeIpunt($_POST["venue_address_1"]);
-    if (validAdress($address_1)){
-        if (strlen($address_1) > 20){
-            echo "Le champ adress1 est trop long";
-            exit;
-        }
-    }else{
-        echo "Adresse invalide";
-        exit;
-    }
-// ---
-    $address_2 = sanitizeIpunt($_POST["venue_address_2"]);
-    if (validAdress($address_2)){
-        if (strlen($address_2) > 20){
-            echo "Le champ adress2 est trop long";
-            exit;
-        }
-    }else{
-        echo "Adresse invalide";
-        exit;
-    }
-// ---
-    $city = sanitizeIpunt($_POST["city"]);
-    if (validLetterOnly($city)){
-        if (strlen($city) > 21){
-            echo "Le champ city est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">PROMOTION est trop long</div>';
             exit;
         } 
     }else{
-        echo "Le champ city contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">PROMOTION contien des caractères invalide</div>';
         exit;
     }
 // ---
-    $region = sanitizeIpunt($_POST["region"]);
-    if (validLetterOnly($region)){
-        if (strlen($region) > 21){
-            echo "Le champ region est trop long";
+    $venue_name = sanitizeInput($_POST["venue_name"]);
+    if (validLetterOnly($venue_name)){
+        if (strlen($venue_name) > 20){
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">NAME est trop long</div>';
+            exit;
+        } 
+    }else{
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">NAME contien des caractères invalide</div>';
+        exit;
+    }
+// ---
+    $address_1 = sanitizeInput($_POST["venue_address_1"]);
+    if (validAdress($address_1)){
+        if (strlen($address_1) > 20){
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">STREET ADRESS est trop long. 20 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Le champ region contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">STREET ADRESS contient des caractères interdit</div>';
         exit;
     }
 // ---
-    $postal = sanitizeIpunt($_POST["postal"]);
+    $address_2 = sanitizeInput($_POST["venue_address_2"]);
+    if (validAdress($address_2)){
+        if (strlen($address_2) > 20){
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">STREET ADRESS line 2 est trop long. 20 caractères maximum</div>';
+            exit;
+        }
+    }else{
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">STREET ADRESS line 2 contient des caractères interdit </div>';
+        exit;
+    }
+// ---
+    $city = sanitizeInput($_POST["city"]);
+    if (validLetterOnly($city)){
+        if (strlen($city) > 20){
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">CITY est trop long. 20 caractères maximum</div>';
+            exit;
+        } 
+    }else{
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">CITY contient des caractères interdit </div>';
+        exit;
+    }
+// ---
+    $region = sanitizeInput($_POST["region"]);
+    if (validLetterOnly($region)){
+        if (strlen($region) > 20){
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">REGION est trop long. 20 caractères maximum</div>';
+            exit;
+        }
+    }else{
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">REGION contient des caractères interdit </div>';
+        exit;
+    }
+// ---
+    $postal = sanitizeInput($_POST["postal"]);
+    if (empty($postal)){
+        echo "Le champ postal est vide. Veuillez le remplir.";
+        exit;
+    }
+
     if (validNumberOnly($postal)){
         if (strlen($postal) > 5){
-            echo "Le champ postal est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">POSTAL est trop long. 5 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Le champ Postal contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">POSTAL contient des caractères interdit </div>';
         exit;
     }
 
 // ---
-    $country = sanitizeIpunt($_POST["country"]);
-    if ($country !== "1" && $country !== "2" && $country !== "3" && $country !== "4" && $country !== "5"){
+    $country = sanitizeInput($_POST["country"]);
+    if (empty($country)){
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">"COUNTRY est vide"</div>';
+        exit;
+    } elseif ($country !== "1" && $country !== "2" && $country !== "3" && $country !== "4" && $country !== "5"){
         header("Location: fail.html");
         exit;
     }
 // ---
-    $capacity = sanitizeIpunt($_POST["capacity"]);
+    $capacity = sanitizeInput($_POST["capacity"]);
     if (validNumberOnly($capacity)){
         if (strlen($capacity) > 10){
-            echo "Le champ capacity est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">CAPACITY est trop long</div>';
             exit;
         }
     }else{
-        echo "Le champ Postal contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">CAPACITY contien des caractères invalide</div>';
         exit;
     }
 // ---
-    $attendance = sanitizeIpunt($_POST["attendance"]);
+    $attendance = sanitizeInput($_POST["attendance"]);
     if (validNumberOnly($attendance)){
         if (strlen($attendance) > 10){
-            echo "Le champ attendance est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">ATTENDANCE est trop long. 10 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Le champ Expected Attendance contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">ATTENDANCE contient des caractères interdit </div>';
         exit;
     }
 // ---
-    $performance = sanitizeIpunt($_POST["performance"]);
+    $performance = sanitizeInput($_POST["performance"]);
     if ($performance !== "1" && $performance !== "2"){
         header("Location: fail.html");
         exit;
     }
 // ---
-    $time_set = sanitizeIpunt($_POST["time"]);
+    $time_set = sanitizeInput($_POST["time"]);
     if (validNumberOnly($time_set)){
         if (strlen($time_set) > 5){
-            echo "Le champ time set est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">SET_TIME est trop long. 5 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Le champ Set time contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">SET_TIME contient des caractères interdit </div>';
         exit;
     }
 // ---
-    $firstname = sanitizeIpunt($_POST["contact_firstname"]);
+    $firstname = sanitizeInput($_POST["contact_firstname"]);
     if (validLetterOnly($firstname)){
         if (strlen($firstname) > 15){
-            echo "Le champ firstname est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT PERSON > Firstname est trop long. 15 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Le champ Contact person contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT PERSON > Firstname contient des caractères interdit </div>';
         exit;
     }
 // ---
-    $lastname = sanitizeIpunt($_POST["contact_lastname"]);
+    $lastname = sanitizeInput($_POST["contact_lastname"]);
     if (validLetterOnly($lastname)){
         if (strlen($lastname) > 15){
-            echo "Le champ lastname est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT PERSON > Lastname est trop long. 15 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Le champ Contact person contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT PERSON > Lastname contient des caractères interdit </div>';
         exit;
     }
 // ---
     $email = filter_var($_POST["email"], FILTER_SANITIZE_EMAIL);
     if (validEmailOnly($email)){
         if (strlen($email) > 27){
-            echo "Le champ email est trop long";
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT EMAIL est trop long. 27 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Email non valide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT EMAIL contient des caractères interdit </div>';
         exit;
     }
 // ---
-    $number_contact = sanitizeIpunt($_POST["number"]);
+    $number_contact = sanitizeInput($_POST["number"]);
     if (validNumberOnly($number_contact)){
-        if (strlen($number_contact) > 10){
-            echo "Le champ number est trop long";
+        if (strlen($number_contact) > 12){
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT NUMBER est trop long. 12 caractères maximum</div>';
             exit;
         }
     }else{
-        echo "Le champ Contact number contien des caractères invalide";
+        echo '<div style="background-color: #a82877; color: white; padding: 10px;">CONTACT NUMBER contient des caractères interdit </div>';
         exit;
     }
 // ---
-    $recorded = sanitizeIpunt($_POST["recorded"]);
+    $recorded = sanitizeInput($_POST["recorded"]);
     if ($recorded !== "yes" && $recorded !== "no"){
         header("Location: fail.html");
         exit;
     }
 // ---
     $file = $_FILES["fileToUpload"];
-
+    
+    if ($file["error"] !== 4){
     // verification si pdf
-    if ($file["type"] !== "application/pdf"){
-        echo "Le fichier doit être en format PDF";
-        exit;
-    }
-    // Vérification de l'extension du fichier
-    $filename = $file["name"];
-    $extension = pathinfo($filename, PATHINFO_EXTENSION);
-    if ($extension !== "pdf") {
-        echo "Le fichier doit avoir l'extension PDF.";
-        exit;
-    }
-    // vérification si pas faux pdf
-    $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
-    $mimeType = finfo_file($fileInfo, $file["tmp_name"]);
-    finfo_close($fileInfo);
+        if ($file["type"] !== "application/pdf"){
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">Le fichier doit être en format PDF</div>';
+            exit;
+        }
+        // Vérification de l'extension du fichier
+        $filename = $file["name"];
+        $extension = pathinfo($filename, PATHINFO_EXTENSION);
+        if ($extension !== "pdf") {
+            echo '<div style="background-color: #a82877; color: white; padding: 10px;">Le fichier doit être en format PDF</div>';
+            exit;
+        }
+        // vérification si pas faux pdf
+        $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($fileInfo, $file["tmp_name"]);
+        finfo_close($fileInfo);
 
-    if ($mimeType !== "application/pdf") {
-        header("Location: fail.html");
-        exit;
+        if ($mimeType !== "application/pdf") {
+            header("Location: fail.html");
+            exit;
+        }
     }
-
 }
 ?>
+
 <!-- HTML return-->
 <!DOCTYPE html>
 <html>
@@ -329,6 +340,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         echo "<p>Email du contact : " . htmlspecialchars($email) . "</p>";
         echo "<p>Numéro de téléphone du contact : " . htmlspecialchars($number_contact) . "</p>";
         echo "<p>Enregistrement de l'événement : " . htmlspecialchars($recorded) . "</p>";
+        echo "<p>Fichier envoyé : " . htmlspecialchars($file) . "</p>";
         ?>
     </div>
 </body>
